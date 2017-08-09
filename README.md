@@ -26,7 +26,7 @@ EditorButtons.core.pdb | EditorButtons.editor.pdb
 EditorButtons.core.xml |
 
 ### Usage
-See the Sample plugin for an example of how to use this plugin.
+See the [Sample plugin](https://github.com/LaughingLeader/duality-editor-buttons/tree/master/Sample/CorePlugin) for an example of how to use this plugin.
 
 Also check out the [Getting Started](https://github.com/LaughingLeader/duality-editorbuttons/wiki/Getting_Started) page for more information.
 
