@@ -10,10 +10,11 @@
     <projectUrl>https://github.com/LaughingLeader/duality-editorbuttons</projectUrl>
     <iconUrl></iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <summary>Show properties as buttons in the editor.</summary>
-    <description>Allows properties to act as buttons, triggering the methods you specify.
-
-    Supports multiple rows of buttons and button styling (color, size, label, background color, etc.).
+    <summary>A sample plugin for the EditorButtons plugin.</summary>
+    <description>EditorButtons allows specialized button properties in Components to act as buttons, triggering the methods you specify.
+    Supports multiple rows of buttons and button styling (color, size, label, background, etc.).
+	
+	This is a sample plugin that creates a Component with the button properties configured.
     </description>
     <releaseNotes>
     </releaseNotes>

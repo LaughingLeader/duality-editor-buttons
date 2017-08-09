@@ -1,8 +1,8 @@
 EditorButtons Plugin for Duality
 =======
-Customizable component buttons for [Duality](http://duality.adamslair.net/), a 2D game engine for C#.
+Customizable Component buttons for [Duality](http://duality.adamslair.net/), a 2D game engine for C#.
 
-This plugin allows you to turn Component properties into buttons and use them to trigger custom methods.
+This plugin allows specialized properties (on Components) to display as buttons in the Duality Editor.
 
 ### Installation
 1. Open Duality
