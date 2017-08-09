@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>LaughingLeader.Duality.Plugins.EditorButtons.Sample</id>
+    <version>1.0.0</version>
+    <title>Editor Buttons Sample</title>
+    <authors>LaughingLeader</authors>
+    <owners>LaughingLeader</owners>
+    <licenseUrl>https://raw.githubusercontent.com/LaughingLeader/duality-editorbuttons/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/LaughingLeader/duality-editorbuttons</projectUrl>
+    <iconUrl></iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <summary>Show properties as buttons in the editor.</summary>
+    <description>Allows properties to act as buttons, triggering the methods you specify.
+
+    Supports multiple rows of buttons and button styling (color, size, label, background color, etc.).
+    </description>
+    <releaseNotes>
+    </releaseNotes>
+    <copyright>Copyright 2017</copyright>
+    <tags>Duality Plugin Editor Button</tags>
+    <dependencies>
+      <dependency id="AdamsLair.Duality" version="2.12.13" />
+      <dependency id="LaughingLeader.Duality.Plugins.EditorButtons.Core" version="1.0.0" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\Core\bin\Release\EditorButtons.core.dll" target="lib" />
+    <file src="..\Core\bin\Release\EditorButtons.core.pdb" target="lib" />
+    <file src="..\Core\bin\Release\EditorButtons.core.xml" target="lib" />
+  </files>
+</package>

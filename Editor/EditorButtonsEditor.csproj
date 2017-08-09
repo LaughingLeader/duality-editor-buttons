@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <StartAction>Program</StartAction>
+    <StartProgram>$(SolutionDir)..\..\DualityEditor.exe</StartProgram>
+    <StartWorkingDirectory>$(SolutionDir)..\..</StartWorkingDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <StartAction>Program</StartAction>
+    <StartProgram>$(SolutionDir)..\..\DualityEditor.exe</StartProgram>
+    <StartWorkingDirectory>$(SolutionDir)..\..</StartWorkingDirectory>
+  </PropertyGroup>
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{4A4A78EE-2E3F-4034-9335-B3E9BA7718B8}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>EditorButtons.Editor</RootNamespace>
+    <AssemblyName>EditorButtons.editor</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AdamsLair.WinForms, Version=1.1.12.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AdamsLair.WinForms.1.1.12\lib\net45\AdamsLair.WinForms.dll</HintPath>
+    </Reference>
+    <Reference Include="Aga.Controls, Version=1.7.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AdamsLair.TreeViewAdv.1.7.6.0\lib\net20\Aga.Controls.dll</HintPath>
+    </Reference>
+    <Reference Include="Duality, Version=2.12.13.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AdamsLair.Duality.2.12.13\lib\Duality.dll</HintPath>
+    </Reference>
+    <Reference Include="DualityEditor, Version=2.9.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AdamsLair.Duality.Editor.2.9.1\lib\DualityEditor.exe</HintPath>
+    </Reference>
+    <Reference Include="DualityPrimitives, Version=2.0.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AdamsLair.Duality.Primitives.2.0.4\lib\DualityPrimitives.dll</HintPath>
+    </Reference>
+    <Reference Include="FarseerDuality, Version=4.1.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AdamsLair.FarseerDuality.4.1.4\lib\portable45-net45+win8+wpa81\FarseerDuality.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.XmlTransform, Version=2.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Xdt.2.1.1\lib\net40\Microsoft.Web.XmlTransform.dll</HintPath>
+    </Reference>
+    <Reference Include="NuGet.Core, Version=2.8.50926.602, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\NuGet.Core.2.8.3\lib\net40-Client\NuGet.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="NVorbis, Version=0.7.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AdamsLair.NVorbis.0.7.5\lib\portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10\NVorbis.dll</HintPath>
+    </Reference>
+    <Reference Include="PopupControl, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AdamsLair.WinForms.PopupControl.1.0.0.0\lib\net40\PopupControl.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WeifenLuo.WinFormsUI.Docking, Version=2.8.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AdamsLair.DockPanelSuite.2.8.1.0\lib\net20\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Buttons\BrushSettings.cs" />
+    <Compile Include="PropertyEditors\ButtonContainerPropertyEditor.cs" />
+    <Compile Include="Buttons\ButtonPropertyMethods.cs" />
+    <Compile Include="PropertyEditors\ButtonRowPropertyEditor.cs" />
+    <Compile Include="Buttons\ButtonProperty.cs" />
+    <Compile Include="Buttons\IButtonPropertyEditor.cs" />
+    <Compile Include="EditorPlugin.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core\EditorButtonsCore.csproj">
+      <Project>{ebafc3ac-54aa-4528-a9e5-0ee0f60ec808}</Project>
+      <Name>EditorButtonsCore</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

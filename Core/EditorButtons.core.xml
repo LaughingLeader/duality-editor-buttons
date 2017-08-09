@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>EditorButtons.core</name>
+    </assembly>
+    <members>
+        <member name="P:EditorButtons.Editor.IButtonContainer.Dirty">
+            <summary>
+            Notifies the ButtonContainerPropertyEditor to rebuild the buttons.
+            </summary>
+        </member>
+        <member name="P:EditorButtons.Editor.IButtonValue.AdditionalUpdates">
+            <summary>
+            Additional GameObjects to refresh once a button is clicked.
+            </summary>
+        </member>
+    </members>
+</doc>
