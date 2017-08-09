@@ -28,7 +28,7 @@ EditorButtons.core.xml |
 ### Usage
 See the [Sample plugin](https://github.com/LaughingLeader/duality-editor-buttons/tree/master/Sample/CorePlugin) for an example of how to use this plugin.
 
-Also check out the [Getting Started](https://github.com/LaughingLeader/duality-editorbuttons/wiki/Getting_Started) page for more information.
+Also check out the [Getting Started](https://github.com/LaughingLeader/duality-editor-buttons/wiki/Getting-Started) page for more information.
 
 ## Contributing to this project
 
