@@ -14,7 +14,7 @@ This plugin allows specialized properties (on Components) to display as buttons 
 
 ### Manual Installation
 1. Grab the repository, either through cloning or downloading the zip.
-2. Open EditorBuggins.sln in Visual Studio
+2. Open EditorButtons.sln in Visual Studio
 3. Restore the nuget packages, or manually add the missing references for both the Core and Editor plugins.
 4. Build the solution.
 5. Copy the output files to your Duality project's Plugin directory.
