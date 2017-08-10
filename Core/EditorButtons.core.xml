@@ -6,7 +6,7 @@
     <members>
         <member name="P:EditorButtons.Editor.IButtonContainer.Dirty">
             <summary>
-            Notifies the ButtonContainerPropertyEditor to rebuild the buttons.
+            Notifies the ButtonContainerPropertyEditor to rebuild and re-paint.
             </summary>
         </member>
         <member name="P:EditorButtons.Editor.IButtonValue.AdditionalUpdates">
