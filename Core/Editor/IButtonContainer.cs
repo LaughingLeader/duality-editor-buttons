@@ -17,7 +17,7 @@ namespace EditorButtons.Editor
 		int Indent { get; set; }
 
 		/// <summary>
-		/// Notifies the ButtonContainerPropertyEditor to rebuild the buttons.
+		/// Notifies the ButtonContainerPropertyEditor to rebuild and re-paint.
 		/// </summary>
 		bool Dirty { get; set; }
 	}
