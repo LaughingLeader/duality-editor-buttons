@@ -155,7 +155,6 @@ namespace ButtonSample
 				if (singleButtonContainer == null)
 				{
 					singleButtonContainer = new EditorButtonContainer("Single Row", ButtonRowAlign.Center);
-					singleButtonContainer.ShowPropertyName = false;
 					singleButtonContainer.Rows.First().Background = new SolidBackground(ColorRgba.Green);
 
 					addGameObjectButton = new EditorButton("Add GameObject", AddGameObjectExternal, 0.25f);
@@ -170,7 +169,6 @@ namespace ButtonSample
 				if (multiRowButtonContainer == null)
 				{
 					multiRowButtonContainer = new EditorButtonContainer("Sample Buttons", ButtonRowAlign.Center);
-					multiRowButtonContainer.ShowPropertyName = false;
 					multiRowButtonContainer.Collapsible = false;
 
 					var addButton = new EditorButton("Add", AddToList, 0.25f);

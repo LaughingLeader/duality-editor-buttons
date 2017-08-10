@@ -5,15 +5,13 @@ namespace ButtonSample.Buttons
 {
 	public class EditorButtonContainer : IButtonContainer
 	{
-		public ButtonRowAlign DefaultAlign { get; set; }
-		public bool ShowPropertyName { get; set; } = false;
-		public HeaderSettings HeaderSettings { get; set; }
 		public List<IButtonRow> Rows { get; set; }
+		public HeaderSettings HeaderSettings { get; set; }
+		public ButtonRowAlign DefaultAlign { get; set; }
+		public int Indent { get; set; }
 		public int ButtonSpacingX { get; set; }
 		public bool Collapsible { get; set; }
 		public bool Dirty { get; set; }
-
-		public int Indent { get; set; }
 
 		public EditorButtonContainer(string Name = "", ButtonRowAlign Align = ButtonRowAlign.Left, int SpacingX = 1)
 		{
