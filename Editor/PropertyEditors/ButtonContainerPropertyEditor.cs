@@ -23,6 +23,9 @@ namespace EditorButtons.Editor.PropertyEditors
 		private int totalWidth = 0;
 		private int spacingX;
 		private int originalHeaderHeight = 0;
+		private bool propertyChanged = false;
+		private bool initialized = false;
+		private bool dataInitialized = false;
 
 		private IButtonContainer data;
 
@@ -53,12 +56,12 @@ namespace EditorButtons.Editor.PropertyEditors
 		protected void ApplyData(IButtonContainer value)
 		{
 			this.Container = value;
+			this.Indent = value.Indent;
 
 			if (value.HeaderSettings != null)
 			{
 				if (value.HeaderSettings.HeaderLabel != null)
 				{
-					
 					this.HeaderValueText = value.HeaderSettings.HeaderLabel;
 				}
 
@@ -116,6 +119,8 @@ namespace EditorButtons.Editor.PropertyEditors
 			if (value != null)
 			{
 				ApplyData(value);
+
+				Log.Editor.Write($"Initializing rows for [{this.PropertyName}|{this.HeaderValueText}]");
 
 				if (rowEditors.Count > 0)
 				{
@@ -212,13 +217,6 @@ namespace EditorButtons.Editor.PropertyEditors
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			if (data == null) data = this.GetValue().Cast<IButtonContainer>().FirstOrDefault();
-
-			if (data != null && (data.Dirty || buttonPropertyRows.Count == 0))
-			{
-				InitButtonRows(data);
-			}
-
 			base.OnPaint(e);
 
 			if (buttonPropertyRows.Count == 0)
@@ -226,20 +224,23 @@ namespace EditorButtons.Editor.PropertyEditors
 				ButtonPropertyMethods.OnPaint(this, e, this.ControlRenderer);
 			}
 
-			if (data != null && data.Dirty)
+			if (data == null) data = GetValue()?.Cast<IButtonContainer>().FirstOrDefault();
+
+			if (data != null && data.Dirty || propertyChanged)
 			{
-				data.Dirty = false;
+				if (data.Dirty) data.Dirty = false;
+				if (propertyChanged) propertyChanged = false;
 				ButtonPropertyMethods.RefreshAffectedProperty(this);
 			}
 		}
 
 		private void OnObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs e)
 		{
-			if (data != null && data.Dirty)
+			if (data != null && data.Dirty && !propertyChanged)
 			{
+				//Log.Editor.WriteWarning($"{this.HeaderValueText} is dirty. Updating.");
 				InitButtonRows(data);
-				data.Dirty = false;
-				ButtonPropertyMethods.RefreshAffectedProperty(this);
+				propertyChanged = true;
 			}
 		}
 
@@ -291,15 +292,43 @@ namespace EditorButtons.Editor.PropertyEditors
 		public ButtonContainerPropertyEditor()
 		{
 			buttonPropertyRows = new List<List<ButtonProperty>>();
-			this.Hints = HintFlags.None;
-			this.Indent = 0;
-
-			DualityEditorApp.ObjectPropertyChanged += OnObjectPropertyChanged;
+			Hints = HintFlags.None;
 		}
 
-		public override void InitContent()
+		protected override void OnParentEditorChanged()
 		{
-			base.InitContent();
+			base.OnParentEditorChanged();
+
+			if(!initialized)
+			{
+				//Log.Editor.Write($"ParentEditor changed for {this.PropertyName} Active {this.Active} | Added event.");
+				DualityEditorApp.ObjectPropertyChanged += OnObjectPropertyChanged;
+				initialized = true;
+			}
+
+			if(!dataInitialized && this.GetValue() != null)
+			{
+				data = this.GetValue()?.Cast<IButtonContainer>().FirstOrDefault();
+
+				if (data != null)
+				{
+					InitButtonRows(data);
+					dataInitialized = true;
+				}
+			}
+		}
+
+		protected override void OnDisposing(bool manually)
+		{
+			if(initialized)
+			{
+				//Log.Editor.Write($"{this.PropertyName} is Disposing | Removed event.");
+				DualityEditorApp.ObjectPropertyChanged -= OnObjectPropertyChanged;
+				initialized = false;
+				dataInitialized = false;
+			}
+
+			base.OnDisposing(manually);
 		}
 	}
 }

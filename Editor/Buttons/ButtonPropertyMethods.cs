@@ -285,7 +285,7 @@ namespace EditorButtons.Editor.Buttons
 				editor.ButtonPanel = editorRect;
 			}
 
-			if (editor.Buttons.Count > 0)
+			if (editor.Buttons?.Count > 0)
 			{
 				if (editor.TotalWidth == 0) editor.TotalWidth = CalculateTotalWidth(editor);
 
@@ -352,7 +352,7 @@ namespace EditorButtons.Editor.Buttons
 
 		public static void OnMouseMove(IButtonPropertyEditor editor, MouseEventArgs e)
 		{
-			if (editor.Buttons.Count > 0)
+			if (editor.Buttons?.Count > 0)
 			{
 				foreach (var button in editor.Buttons)
 				{
@@ -364,7 +364,7 @@ namespace EditorButtons.Editor.Buttons
 
 		public static void OnMouseLeave(IButtonPropertyEditor editor, EventArgs e)
 		{
-			if (editor.Buttons.Count > 0)
+			if (editor.Buttons?.Count > 0)
 			{
 				foreach (var button in editor.Buttons)
 				{
@@ -375,7 +375,7 @@ namespace EditorButtons.Editor.Buttons
 
 		public static void OnMouseDown(IButtonPropertyEditor editor, MouseEventArgs e)
 		{
-			if (editor.Buttons.Count > 0)
+			if (editor.Buttons?.Count > 0)
 			{
 				foreach (var button in editor.Buttons)
 				{
@@ -389,7 +389,7 @@ namespace EditorButtons.Editor.Buttons
 
 		public static void OnClick(IButtonPropertyEditor editor, MouseEventArgs e)
 		{
-			if (editor.Buttons.Count > 0)
+			if (editor.Buttons?.Count > 0)
 			{
 				foreach (var button in editor.Buttons)
 				{
