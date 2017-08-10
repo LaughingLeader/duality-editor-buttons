@@ -1,4 +1,4 @@
-EditorButtons Plugin for Duality
+Editor Buttons Plugin for Duality
 =======
 Customizable Component buttons for [Duality](http://duality.adamslair.net/), a 2D game engine for C#.
 
