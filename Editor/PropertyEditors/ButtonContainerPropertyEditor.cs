@@ -1,5 +1,6 @@
 ﻿using AdamsLair.WinForms.PropertyEditing;
 using Duality;
+using Duality.Drawing;
 using Duality.Editor;
 using EditorButtons.Editor.Backgrounds;
 using EditorButtons.Editor.Buttons;
@@ -20,6 +21,7 @@ namespace EditorButtons.Editor.PropertyEditors
 		private ButtonRowAlign align;
 		private int totalWidth = 0;
 		private int spacingX;
+		private int originalHeaderHeight = 0;
 
 		private IButtonContainer data;
 
@@ -50,20 +52,60 @@ namespace EditorButtons.Editor.PropertyEditors
 		protected void ApplyData(IButtonContainer value)
 		{
 			this.Container = value;
-			this.PropertyName = value.HeaderName;
+
+			if (value.HeaderSettings != null)
+			{
+				if (value.HeaderSettings.HeaderLabel != null)
+				{
+					
+					this.HeaderValueText = value.HeaderSettings.HeaderLabel;
+				}
+
+				if(value.HeaderSettings.PropertyLabel != null)
+				{
+					this.PropertyName = value.HeaderSettings.PropertyLabel;
+				}
+
+				if (value.HeaderSettings.Color != default(ColorRgba))
+				{
+					this.HeaderColor = value.HeaderSettings.Color.ToSysDrawColor();
+				}
+
+				this.HeaderStyle = (GroupHeaderStyle)value.HeaderSettings.Style;
+
+				if (value.HeaderSettings.Icon != null && value.HeaderSettings.Icon.IsAvailable)
+				{
+					this.HeaderIcon = value.HeaderSettings.Icon.Res.MainLayer.ToBitmap();
+				}
+
+				if(!value.HeaderSettings.ShowHeaderLabel)
+				{
+					this.HeaderHeight = 0;
+				}
+				else if (value.HeaderSettings.Height > -1)
+				{
+					this.HeaderHeight = value.HeaderSettings.Height;
+				}
+				else
+				{
+					if (this.HeaderHeight <= 0) this.HeaderHeight = originalHeaderHeight;
+				}
+
+
+				if (value.HeaderSettings.ShowPropertyLabel)
+				{
+					Hints |= HintFlags.HasPropertyName;
+				}
+				else
+				{
+					Hints = Hints & ~HintFlags.HasPropertyName;
+				}
+			}
+
 			this.Collapsible = value.Collapsible;
 
 			align = value.DefaultAlign;
 			spacingX = value.ButtonSpacingX;
-
-			if (value.ShowPropertyName)
-			{
-				Hints |= HintFlags.HasPropertyName;
-			}
-			else
-			{
-				Hints = Hints & ~HintFlags.HasPropertyName;
-			}
 		}
 
 		protected void InitButtonRows(IButtonContainer value)
@@ -108,7 +150,7 @@ namespace EditorButtons.Editor.PropertyEditors
 
 					buttonPropertyRows.Add(buttonRow);
 
-					if (value.Rows.Count > 1)
+					if (value.Rows.Count > 0)
 					{
 						var rowEditor = new ButtonRowPropertyEditor(this, buttonRow, row, value.ButtonSpacingX);
 						if (!Collapsible)
@@ -129,7 +171,7 @@ namespace EditorButtons.Editor.PropertyEditors
 					rowNum++;
 				}
 
-				if (buttonPropertyRows.Count > 1)
+				if (buttonPropertyRows.Count > 0)
 				{
 					if (Collapsible)
 					{
@@ -152,7 +194,7 @@ namespace EditorButtons.Editor.PropertyEditors
 					Hints = Hints & ~HintFlags.ExpandEnabled;
 				}
 
-				if (value.Dirty) value.Dirty = false;
+				if (originalHeaderHeight <= 0) originalHeaderHeight = this.HeaderHeight;
 			}
 		}
 
@@ -178,14 +220,23 @@ namespace EditorButtons.Editor.PropertyEditors
 
 			base.OnPaint(e);
 
-			if (buttonPropertyRows.Count == 1) ButtonPropertyMethods.OnPaint(this, e, this.ControlRenderer);
+			if (buttonPropertyRows.Count == 0)
+			{
+				ButtonPropertyMethods.OnPaint(this, e, this.ControlRenderer);
+			}
+
+			if (data != null && data.Dirty)
+			{
+				data.Dirty = false;
+				ButtonPropertyMethods.RefreshAffectedProperty(this);
+			}
 		}
 
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
 			base.OnMouseMove(e);
 
-			if (buttonPropertyRows.Count == 1) ButtonPropertyMethods.OnMouseMove(this, e);
+			if (buttonPropertyRows.Count == 0) ButtonPropertyMethods.OnMouseMove(this, e);
 
 			this.Invalidate();
 		}
@@ -194,7 +245,7 @@ namespace EditorButtons.Editor.PropertyEditors
 		{
 			base.OnMouseLeave(e);
 
-			if (buttonPropertyRows.Count == 1) ButtonPropertyMethods.OnMouseLeave(this, e);
+			if (buttonPropertyRows.Count == 0) ButtonPropertyMethods.OnMouseLeave(this, e);
 
 			this.Invalidate();
 		}
@@ -203,7 +254,7 @@ namespace EditorButtons.Editor.PropertyEditors
 		{
 			base.OnMouseDown(e);
 
-			if (buttonPropertyRows.Count == 1) ButtonPropertyMethods.OnMouseDown(this, e);
+			if (buttonPropertyRows.Count == 0) ButtonPropertyMethods.OnMouseDown(this, e);
 
 			this.Invalidate();
 		}
@@ -212,7 +263,7 @@ namespace EditorButtons.Editor.PropertyEditors
 		{
 			base.OnMouseUp(e);
 
-			if (buttonPropertyRows.Count == 1) ButtonPropertyMethods.OnClick(this, e);
+			if (buttonPropertyRows.Count == 0) ButtonPropertyMethods.OnClick(this, e);
 
 			this.Invalidate();
 		}

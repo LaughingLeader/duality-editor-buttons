@@ -97,7 +97,7 @@ namespace EditorButtons.Editor.Buttons
 			return width;
 		}
 
-		public static void RefreshAffectedProperty(IButtonPropertyEditor editor, IButtonValue button)
+		public static void RefreshAffectedProperty(IButtonPropertyEditor editor, IButtonValue button = null)
 		{
 			var parent = editor.Editor.ParentGrid;
 
@@ -106,7 +106,7 @@ namespace EditorButtons.Editor.Buttons
 
 			var aboveControl = parent.ParentForm.GetContainerControl();
 
-			if (button.AdditionalUpdates != null && button.AdditionalUpdates.Count > 0)
+			if (button != null && button.AdditionalUpdates != null && button.AdditionalUpdates.Count > 0)
 			{
 				foreach (var gameObj in button.AdditionalUpdates)
 				{

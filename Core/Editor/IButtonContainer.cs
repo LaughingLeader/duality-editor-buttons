@@ -5,9 +5,8 @@ namespace EditorButtons.Editor
 	public interface IButtonContainer
 	{
 		ButtonRowAlign DefaultAlign { get; set; }
-		bool ShowPropertyName { get; set; }
 		bool Collapsible { get; set; }
-		string HeaderName { get; set; }
+		HeaderSettings HeaderSettings { get; set; }
 
 		List<IButtonRow> Rows { get; set; }
 
