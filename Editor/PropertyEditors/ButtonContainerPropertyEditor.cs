@@ -14,37 +14,20 @@ using System.Windows.Forms;
 namespace EditorButtons.Editor.PropertyEditors
 {
 	[PropertyEditorAssignment(typeof(IButtonContainer))]
-	public class ButtonContainerPropertyEditor : GroupedPropertyEditor, IButtonPropertyEditor
+	public class ButtonContainerPropertyEditor : GroupedPropertyEditor
 	{
-		protected Rectangle buttonPanel = Rectangle.Empty;
+		private IButtonContainer data;
+		protected Rectangle backgroundPanel = Rectangle.Empty;
 		protected List<List<ButtonProperty>> buttonPropertyRows;
 		private List<ButtonRowPropertyEditor> rowEditors;
-		private ButtonRowAlign align;
-		private int totalWidth = 0;
-		private int spacingX;
 		private int originalHeaderHeight = 0;
 		private bool propertyChanged = false;
 		private bool initialized = false;
 		private bool dataInitialized = false;
 
-		private IButtonContainer data;
-
-		#region IButtonPropertyEditor
-
-		public Rectangle ButtonPanel { get => buttonPanel; set => buttonPanel = value; }
-		public List<ButtonProperty> Buttons { get => buttonPropertyRows?.FirstOrDefault(); }
-		public int TotalWidth { get => totalWidth; set => totalWidth = value; }
-		public int SpacingX { get => spacingX; set => spacingX = value; }
-		public ButtonRowAlign Align { get => align; set => align = value; }
-
-		public PropertyEditor Editor { get => this; }
-
-		public IButtonContainer Container { get; set; }
-
+		public Rectangle BackgroundPanel { get => backgroundPanel; set => backgroundPanel = value; }
 		public IButtonBackground Background { get; set; }
 		public IBrushSettings<Brush> BrushSettings { get; set; }
-
-		#endregion IButtonPropertyEditor
 
 		public bool Collapsible { get; set; } = true;
 
@@ -53,9 +36,10 @@ namespace EditorButtons.Editor.PropertyEditors
 			get { return this.GetValue(); }
 		}
 
+		public IButtonContainer Data { get => data; set => data = value; }
+
 		protected void ApplyData(IButtonContainer value)
 		{
-			this.Container = value;
 			this.Indent = value.Indent;
 
 			if (value.HeaderSettings != null)
@@ -111,9 +95,6 @@ namespace EditorButtons.Editor.PropertyEditors
 			}
 
 			this.Collapsible = value.Collapsible;
-
-			align = value.DefaultAlign;
-			spacingX = value.ButtonSpacingX;
 		}
 
 		protected void InitButtonRows(IButtonContainer value)
@@ -150,8 +131,8 @@ namespace EditorButtons.Editor.PropertyEditors
 									Label = button.ButtonLabel,
 									Value = button
 								};
-								buttonEntry.Rect.Width = MathF.RoundToInt(buttonPanel.Width * button.WidthPercentage);
-								buttonEntry.Rect.Height = MathF.RoundToInt(buttonPanel.Height * button.HeightPercentage);
+								buttonEntry.Rect.Width = MathF.RoundToInt(backgroundPanel.Width * button.WidthPercentage);
+								buttonEntry.Rect.Height = MathF.RoundToInt(backgroundPanel.Height * button.HeightPercentage);
 
 								buttonRow.Add(buttonEntry);
 							}
@@ -162,7 +143,7 @@ namespace EditorButtons.Editor.PropertyEditors
 
 					if (value.Rows.Count > 0)
 					{
-						var rowEditor = new ButtonRowPropertyEditor(this, buttonRow, row, value.ButtonSpacingX);
+						var rowEditor = new ButtonRowPropertyEditor(this, buttonRow, row);
 						if (!Collapsible)
 						{
 							rowEditor.Hints = Hints & ~HintFlags.HasExpandCheck;
@@ -212,7 +193,7 @@ namespace EditorButtons.Editor.PropertyEditors
 		{
 			base.UpdateGeometry();
 
-			this.buttonPanel = new Rectangle(
+			this.backgroundPanel = new Rectangle(
 				this.ClientRectangle.X,
 				this.ClientRectangle.Y,
 				this.ClientRectangle.Width,
@@ -225,14 +206,26 @@ namespace EditorButtons.Editor.PropertyEditors
 
 			if (buttonPropertyRows.Count == 0)
 			{
-				ButtonPropertyMethods.OnPaint(this, e, this.ControlRenderer);
+				if (BrushSettings == null && Background != null)
+				{
+					BrushSettings = ButtonPropertyMethods.PrepareBrush(Background);
+				}
+
+				if (BrushSettings != null && BrushSettings.Brush != null)
+				{
+					ButtonPropertyMethods.FillBackground(BackgroundPanel, e, BrushSettings.Brush, Background.Outline);
+				}
+				else
+				{
+					ButtonPropertyMethods.PaintSolid(BackgroundPanel, e, null, Background.Outline);
+				}
 			}
 
-			if (data == null) data = GetValue()?.Cast<IButtonContainer>().FirstOrDefault();
+			if (Data == null) Data = GetValue()?.Cast<IButtonContainer>().FirstOrDefault();
 
-			if (data != null && data.Dirty || propertyChanged)
+			if (Data != null && Data.Dirty || propertyChanged)
 			{
-				if (data.Dirty) data.Dirty = false;
+				if (Data.Dirty) Data.Dirty = false;
 				if (propertyChanged) propertyChanged = false;
 				ButtonPropertyMethods.RefreshAffectedProperty(this);
 			}
@@ -240,57 +233,12 @@ namespace EditorButtons.Editor.PropertyEditors
 
 		private void OnObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs e)
 		{
-			if (data != null && data.Dirty && !propertyChanged)
+			if (Data != null && Data.Dirty && !propertyChanged)
 			{
 				//Log.Editor.WriteWarning($"{this.HeaderValueText} is dirty. Updating.");
-				InitButtonRows(data);
+				InitButtonRows(Data);
 				propertyChanged = true;
 			}
-		}
-
-		protected override void OnMouseMove(MouseEventArgs e)
-		{
-			base.OnMouseMove(e);
-
-			if (buttonPropertyRows.Count == 0) ButtonPropertyMethods.OnMouseMove(this, e);
-
-			this.Invalidate();
-		}
-
-		protected override void OnMouseLeave(EventArgs e)
-		{
-			base.OnMouseLeave(e);
-
-			if (buttonPropertyRows.Count == 0) ButtonPropertyMethods.OnMouseLeave(this, e);
-
-			this.Invalidate();
-		}
-
-		protected override void OnMouseDown(MouseEventArgs e)
-		{
-			base.OnMouseDown(e);
-
-			if (buttonPropertyRows.Count == 0) ButtonPropertyMethods.OnMouseDown(this, e);
-
-			this.Invalidate();
-		}
-
-		protected override void OnMouseUp(MouseEventArgs e)
-		{
-			base.OnMouseUp(e);
-
-			if (buttonPropertyRows.Count == 0) ButtonPropertyMethods.OnClick(this, e);
-
-			this.Invalidate();
-		}
-
-		protected override void OnMouseDoubleClick(MouseEventArgs e)
-		{
-			base.OnMouseDoubleClick(e);
-
-			ButtonPropertyMethods.OnClick(this, e);
-
-			this.Invalidate();
 		}
 
 		public ButtonContainerPropertyEditor()
@@ -312,11 +260,11 @@ namespace EditorButtons.Editor.PropertyEditors
 
 			if(!dataInitialized && this.GetValue() != null)
 			{
-				data = this.GetValue()?.Cast<IButtonContainer>().FirstOrDefault();
+				Data = this.GetValue()?.Cast<IButtonContainer>().FirstOrDefault();
 
-				if (data != null)
+				if (Data != null)
 				{
-					InitButtonRows(data);
+					InitButtonRows(Data);
 					dataInitialized = true;
 				}
 			}

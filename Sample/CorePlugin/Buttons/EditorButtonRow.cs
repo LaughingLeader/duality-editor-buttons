@@ -6,6 +6,7 @@ namespace ButtonSample.Buttons
 {
 	public class EditorButtonRow : IButtonRow
 	{
+		public int ButtonSpacing { get; set; }
 		public float HeightPercentage { get; set; } = 1;
 		public IButtonBackground Background { get; set; }
 		public ButtonRowAlign Align { get; set; }
@@ -25,10 +26,11 @@ namespace ButtonSample.Buttons
 		}
 
 
-		public EditorButtonRow(List<IButtonValue> buttons, ButtonRowAlign align)
+		public EditorButtonRow(List<IButtonValue> buttons, ButtonRowAlign align, int buttonSpacing = 1)
 		{
 			Buttons = buttons;
 			Align = align;
+			ButtonSpacing = buttonSpacing;
 		}
 	}
 }

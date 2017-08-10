@@ -3,14 +3,10 @@
 namespace EditorButtons.Editor
 {
 	public interface IButtonContainer
-	{
-		ButtonRowAlign DefaultAlign { get; set; }
-		
+	{	
 		HeaderSettings HeaderSettings { get; set; }
 
 		List<IButtonRow> Rows { get; set; }
-
-		int ButtonSpacingX { get; set; }
 
 		bool Collapsible { get; set; }
 

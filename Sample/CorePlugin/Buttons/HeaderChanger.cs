@@ -14,7 +14,6 @@ namespace ButtonSample.Buttons
 	public class HeaderChanger
 	{
 		private HeaderSettings target;
-
 		private Action OnPropertyChanged;
 
 
@@ -29,7 +28,7 @@ namespace ButtonSample.Buttons
 				if (target.HeaderLabel != value)
 				{
 					target.HeaderLabel = value;
-					OnPropertyChanged();
+					OnPropertyChanged?.Invoke();
 				}
 			}
 		}
@@ -45,7 +44,7 @@ namespace ButtonSample.Buttons
 				if (target.PropertyLabel != value)
 				{
 					target.PropertyLabel = value;
-					OnPropertyChanged();
+					OnPropertyChanged?.Invoke();
 				}
 			}
 		}
@@ -61,7 +60,7 @@ namespace ButtonSample.Buttons
 				if (target.Color != value)
 				{
 					target.Color = value;
-					OnPropertyChanged();
+					OnPropertyChanged?.Invoke();
 				}
 			}
 		}
@@ -77,7 +76,7 @@ namespace ButtonSample.Buttons
 				if (target.Height != value)
 				{
 					target.Height = value;
-					OnPropertyChanged();
+					OnPropertyChanged?.Invoke();
 				}
 			}
 		}
@@ -93,7 +92,7 @@ namespace ButtonSample.Buttons
 				if (target.Style != value)
 				{
 					target.Style = value;
-					OnPropertyChanged();
+					OnPropertyChanged?.Invoke();
 				}
 			}
 		}
@@ -106,7 +105,7 @@ namespace ButtonSample.Buttons
 				if (target.Icon != value)
 				{
 					target.Icon = value;
-					OnPropertyChanged();
+					OnPropertyChanged?.Invoke();
 				}
 			}
 		}
@@ -122,7 +121,7 @@ namespace ButtonSample.Buttons
 				if (target.ShowPropertyLabel != value)
 				{
 					target.ShowPropertyLabel = value;
-					OnPropertyChanged();
+					OnPropertyChanged?.Invoke();
 				}
 			}
 		}
@@ -138,7 +137,7 @@ namespace ButtonSample.Buttons
 				if (target.ShowHeaderLabel != value)
 				{
 					target.ShowHeaderLabel = value;
-					OnPropertyChanged();
+					OnPropertyChanged?.Invoke();
 				}
 			}
 		}

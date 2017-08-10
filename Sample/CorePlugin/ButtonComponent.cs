@@ -16,9 +16,11 @@ namespace ButtonSample
 	{
 		[DontSerialize] private EditorButtonContainer singleButtonContainer;
 		[DontSerialize] private EditorButtonContainer multiRowButtonContainer;
+		[DontSerialize] private EditorButtonContainer emptyButtonContainer;
 		[DontSerialize] private EditorButtonRow row4;
 		[DontSerialize] private HeaderChanger singleHeaderChanger;
 		[DontSerialize] private HeaderChanger multiHeaderChanger;
+		[DontSerialize] private SolidBackground emptyBackground;
 
 		private List<int> testList;
 		private EditorButton addGameObjectButton;
@@ -47,9 +49,30 @@ namespace ButtonSample
 				}
 			}
 		}
+		
+		public EditorButtonContainer ZA_EmptyButtonContainer { get => emptyButtonContainer; set => emptyButtonContainer = value; }
+		public EditorButtonContainer ZB_SingleButtonContainer { get => singleButtonContainer; set => singleButtonContainer = value; }
+		public EditorButtonContainer ZC_MultiRowButtonContainer { get => multiRowButtonContainer; set => multiRowButtonContainer = value; }
 
-		public EditorButtonContainer SingleButtonContainer => singleButtonContainer;
-		public EditorButtonContainer MultiRowButtonContainer => multiRowButtonContainer;
+		public bool EmptyContainerOutline
+		{
+			get
+			{
+				if (emptyBackground != null) return emptyBackground.Outline;
+				return false;
+			}
+			set
+			{
+				if (emptyBackground != null)
+				{
+					if (emptyBackground.Outline != value)
+					{
+						emptyBackground.Outline = value;
+						emptyButtonContainer.Dirty = true;
+					}
+				}
+			}
+		}
 
 		public HeaderChanger HeaderChangerSingle
 		{
@@ -74,13 +97,20 @@ namespace ButtonSample
 
 		public int IndentMulti
 		{
-			get => multiRowButtonContainer.Indent;
+			get
+			{
+				if (multiRowButtonContainer != null) return multiRowButtonContainer.Indent;
+				return -1;
+			}
 			set
 			{
-				if (multiRowButtonContainer.Indent != value)
+				if (multiRowButtonContainer != null)
 				{
-					multiRowButtonContainer.Indent = value;
-					multiRowButtonContainer.Dirty = true;
+					if (multiRowButtonContainer.Indent != value)
+					{
+						multiRowButtonContainer.Indent = value;
+						multiRowButtonContainer.Dirty = true;
+					}
 				}
 			}
 		}
@@ -105,6 +135,8 @@ namespace ButtonSample
 				}
 			}
 		}
+
+		public SolidBackground EmptyBackground { get => emptyBackground; set => emptyBackground = value; }
 
 		public void ButtonHit()
 		{
@@ -152,9 +184,19 @@ namespace ButtonSample
 			{
 				if (testList == null) testList = new List<int>();
 
+				if(emptyButtonContainer == null)
+				{
+					emptyButtonContainer = new EditorButtonContainer("");
+					emptyBackground = new SolidBackground(ColorRgba.TransparentWhite);
+					emptyBackground.Outline = false;
+					emptyButtonContainer.Rows.First().Background = emptyBackground;
+					emptyButtonContainer.Rows.First().HeightPercentage = 0.75f;
+					emptyButtonContainer.HeaderSettings.Height = 5;
+				}
+
 				if (singleButtonContainer == null)
 				{
-					singleButtonContainer = new EditorButtonContainer("Single Row", ButtonRowAlign.Center);
+					singleButtonContainer = new EditorButtonContainer("Single Row Buttons", ButtonRowAlign.Center);
 					singleButtonContainer.Rows.First().Background = new SolidBackground(ColorRgba.Green);
 
 					addGameObjectButton = new EditorButton("Add GameObject", AddGameObjectExternal, 0.25f);
@@ -168,7 +210,7 @@ namespace ButtonSample
 
 				if (multiRowButtonContainer == null)
 				{
-					multiRowButtonContainer = new EditorButtonContainer("Sample Buttons", ButtonRowAlign.Center);
+					multiRowButtonContainer = new EditorButtonContainer("Multirow Buttons", ButtonRowAlign.Center);
 					multiRowButtonContainer.Collapsible = false;
 
 					var addButton = new EditorButton("Add", AddToList, 0.25f);

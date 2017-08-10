@@ -7,16 +7,13 @@ namespace ButtonSample.Buttons
 	{
 		public List<IButtonRow> Rows { get; set; }
 		public HeaderSettings HeaderSettings { get; set; }
-		public ButtonRowAlign DefaultAlign { get; set; }
 		public int Indent { get; set; }
-		public int ButtonSpacingX { get; set; }
 		public bool Collapsible { get; set; }
 		public bool Dirty { get; set; }
 
-		public EditorButtonContainer(string Name = "", ButtonRowAlign Align = ButtonRowAlign.Left, int SpacingX = 1)
+		public EditorButtonContainer(string Name = "", ButtonRowAlign Align = ButtonRowAlign.Left)
 		{
 			Indent = 0;
-			DefaultAlign = Align;
 			HeaderSettings = new HeaderSettings
 			{
 				HeaderLabel = Name
@@ -24,9 +21,8 @@ namespace ButtonSample.Buttons
 
 			Rows = new List<IButtonRow>();
 
-			IButtonRow row0 = new EditorButtonRow(new List<IButtonValue>(), DefaultAlign);
+			IButtonRow row0 = new EditorButtonRow(new List<IButtonValue>(), Align);
 			Rows.Add(row0);
-			ButtonSpacingX = SpacingX;
 		}
 	}
 }

@@ -3,5 +3,7 @@
 	public interface IButtonBackground
 	{
 		BackgroundStyle BackgroundStyle { get; }
+
+		bool Outline { get; set; }
 	}
 }

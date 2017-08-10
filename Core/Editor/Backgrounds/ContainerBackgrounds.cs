@@ -4,7 +4,12 @@ using Duality.Resources;
 
 namespace EditorButtons.Editor.Backgrounds
 {
-	public class SolidBackground : IButtonBackground
+	public class BackgroundBase
+	{
+		public bool Outline { get; set; } = true;
+	}
+
+	public class SolidBackground : BackgroundBase, IButtonBackground
 	{
 		public BackgroundStyle BackgroundStyle { get => BackgroundStyle.Solid; }
 		public ColorRgba Color { get; set; }
@@ -15,7 +20,7 @@ namespace EditorButtons.Editor.Backgrounds
 		}
 	}
 
-	public class LinearBackground : IButtonBackground
+	public class LinearBackground : BackgroundBase, IButtonBackground
 	{
 		public BackgroundStyle BackgroundStyle { get => BackgroundStyle.LinearGradient; }
 
@@ -48,7 +53,7 @@ namespace EditorButtons.Editor.Backgrounds
 		}
 	}
 
-	public class HatchBackground : IButtonBackground
+	public class HatchBackground : BackgroundBase, IButtonBackground
 	{
 		public BackgroundStyle BackgroundStyle { get => BackgroundStyle.Hatch; }
 		public BgHatchStyle Style { get; set; }
@@ -63,7 +68,7 @@ namespace EditorButtons.Editor.Backgrounds
 		}
 	}
 
-	public class PathBackground : IButtonBackground
+	public class PathBackground : BackgroundBase, IButtonBackground
 	{
 		public BackgroundStyle BackgroundStyle { get => BackgroundStyle.PathGradient; }
 		public BgWrapMode Mode { get; set; }
@@ -80,7 +85,7 @@ namespace EditorButtons.Editor.Backgrounds
 		}
 	}
 
-	public class TextureBackground : IButtonBackground
+	public class TextureBackground : BackgroundBase, IButtonBackground
 	{
 		public BackgroundStyle BackgroundStyle { get => BackgroundStyle.Texture; }
 

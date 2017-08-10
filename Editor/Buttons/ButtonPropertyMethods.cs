@@ -1,8 +1,10 @@
 ﻿using AdamsLair.WinForms.Drawing;
+using AdamsLair.WinForms.PropertyEditing;
 using Duality;
 using Duality.Drawing;
 using Duality.Editor;
 using EditorButtons.Editor.Backgrounds;
+using EditorButtons.Editor.PropertyEditors;
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -77,7 +79,7 @@ namespace EditorButtons.Editor.Buttons
 			ControlRenderer.ColorGrayText = DefaultColorGrayText;
 		}
 
-		private static int CalculateTotalWidth(IButtonPropertyEditor editor)
+		public static int CalculateTotalWidth(ButtonRowPropertyEditor editor)
 		{
 			int width = 0;
 			foreach (var button in editor.Buttons)
@@ -97,9 +99,9 @@ namespace EditorButtons.Editor.Buttons
 			return width;
 		}
 
-		public static void RefreshAffectedProperty(IButtonPropertyEditor editor, IButtonValue button = null)
+		public static void RefreshAffectedProperty(PropertyEditor editor, IButtonValue button = null)
 		{
-			var parent = editor.Editor.ParentGrid;
+			var parent = editor.ParentGrid;
 
 			DualityEditorApp.NotifyObjPropChanged(parent, new ObjectSelection(parent.Selection));
 			parent.MainEditor.PerformGetValue();
@@ -116,45 +118,43 @@ namespace EditorButtons.Editor.Buttons
 			}
 		}
 
-		private static void FillBackground<T>(IButtonPropertyEditor editor, PaintEventArgs e, T fillBrush) where T : Brush
+		public static void FillBackground<T>(Rectangle Panel, PaintEventArgs e, T fillBrush, bool Outline = true) where T : Brush
 		{
 			e.Graphics.FillRectangle(
 					fillBrush,
-					editor.ButtonPanel.X,
-					editor.ButtonPanel.Y,
-					editor.ButtonPanel.Width,
-					editor.ButtonPanel.Height);
+					Panel.X,
+					Panel.Y,
+					Panel.Width,
+					Panel.Height);
 
-			e.Graphics.DrawRectangle(SystemPens.ControlDark, editor.ButtonPanel);
+			if (Outline) e.Graphics.DrawRectangle(SystemPens.ControlDark, Panel);
 		}
 
-		private static void PaintSolid(IButtonPropertyEditor editor, PaintEventArgs e, Color? color = null)
+		public static void PaintSolid(Rectangle Panel, PaintEventArgs e, Color? color = null, bool Outline = true)
 		{
 			if (color == null) color = Color.LightGray;
-			FillBackground(editor, e, new SolidBrush(color.Value));
+			FillBackground(Panel, e, new SolidBrush(color.Value), Outline);
 		}
 
-		public static void OnPaint(IButtonPropertyEditor editor, PaintEventArgs e, ControlRenderer ControlRenderer)
+		public static IBrushSettings<Brush> PrepareBrush(IButtonBackground Background)
 		{
-			if (editor.BrushSettings == null && editor.Background != null)
+			if (Background != null)
 			{
-				switch (editor.Background.BackgroundStyle)
+				switch (Background.BackgroundStyle)
 				{
 					case BackgroundStyle.Solid:
 						{
-							SolidBackground bg = (SolidBackground)editor.Background;
-							SolidBrushSettings settings = new SolidBrushSettings()
+							SolidBackground bg = (SolidBackground)Background;
+							var settings = new SolidBrushSettings()
 							{
 								Color = bg.Color.ToSysDrawColor()
 							};
 							settings.Brush = new SolidBrush(settings.Color);
-							editor.BrushSettings = settings;
+							return settings;
 						}
-						break;
-
 					case BackgroundStyle.LinearGradient:
 						{
-							LinearBackground bg = (LinearBackground)editor.Background;
+							LinearBackground bg = (LinearBackground)Background;
 
 							RectangleF rect = RectangleF.Empty;
 							if (bg.Rectangle != Rect.Empty) rect = new RectangleF(bg.Rectangle.X, bg.Rectangle.Y, bg.Rectangle.W, bg.Rectangle.H);
@@ -162,7 +162,7 @@ namespace EditorButtons.Editor.Buttons
 							var startPoint = new Point(bg.StartPoint.X, bg.StartPoint.Y);
 							var endPoint = new Point(bg.EndPoint.X, bg.EndPoint.Y);
 
-							LinearBrushSettings settings = new LinearBrushSettings
+							var settings = new LinearBrushSettings
 							{
 								Rect = rect,
 								Mode = (LinearGradientMode)bg.GradientMode,
@@ -181,13 +181,11 @@ namespace EditorButtons.Editor.Buttons
 								settings.Brush = new LinearGradientBrush(settings.Start, settings.End, settings.Color1, settings.Color2);
 							}
 
-							editor.BrushSettings = settings;
+							return settings;
 						}
-						break;
-
 					case BackgroundStyle.PathGradient:
 						{
-							PathBackground bg = (PathBackground)editor.Background;
+							PathBackground bg = (PathBackground)Background;
 
 							Point[] path = new Point[bg.Path.Length];
 							for (var i = 0; i < bg.Path.Length; i++)
@@ -205,7 +203,7 @@ namespace EditorButtons.Editor.Buttons
 								surroundColors[i] = bg.SurroundColors[i].ToSysDrawColor();
 							}
 
-							PathBrushSettings settings = new PathBrushSettings
+							var settings = new PathBrushSettings
 							{
 								Path = path,
 								Brush = brush,
@@ -216,34 +214,30 @@ namespace EditorButtons.Editor.Buttons
 
 							brush.CenterColor = settings.CenterColor;
 							brush.SurroundColors = settings.SurroundColors;
-							editor.BrushSettings = settings;
+							return settings;
 						}
-						break;
-
 					case BackgroundStyle.Hatch:
 						{
-							HatchBackground bg = (HatchBackground)editor.Background;
-							HatchBrushSettings settings = new HatchBrushSettings()
+							HatchBackground bg = (HatchBackground)Background;
+							var settings = new HatchBrushSettings()
 							{
 								Style = (HatchStyle)bg.Style,
 								ForeColor = bg.ForeColor.ToSysDrawColor(),
 								BackColor = bg.BackColor.ToSysDrawColor()
 							};
 							settings.Brush = new HatchBrush(settings.Style, settings.ForeColor, settings.BackColor);
-							editor.BrushSettings = settings;
+							return settings;
 						}
-						break;
-
 					case BackgroundStyle.Texture:
 						{
-							TextureBackground bg = (TextureBackground)editor.Background;
+							TextureBackground bg = (TextureBackground)Background;
 
 							Bitmap tex = bg.Texture.Res.MainLayer.ToBitmap();
 							Rectangle rect = Rectangle.Empty;
 							if (bg.Rectangle != Rect.Empty) rect = new Rectangle(MathF.RoundToInt(bg.Rectangle.X), MathF.RoundToInt(bg.Rectangle.Y),
 								MathF.RoundToInt(bg.Rectangle.W), MathF.RoundToInt(bg.Rectangle.H));
 
-							TextureBrushSettings settings = new TextureBrushSettings()
+							var settings = new TextureBrushSettings()
 							{
 								Mode = (WrapMode)bg.Mode,
 								Texture = tex,
@@ -257,157 +251,17 @@ namespace EditorButtons.Editor.Buttons
 							{
 								settings.Brush = new TextureBrush(settings.Texture, settings.Mode);
 							}
-							editor.BrushSettings = settings;
+							return settings;
 						}
-						break;
-
-					default:
-						{
-							PaintSolid(editor, e);
-						}
-						break;
 				}
 			}
 
-			if (editor.BrushSettings != null && editor.BrushSettings.Brush != null)
+			var defaultSettings = new SolidBrushSettings()
 			{
-				FillBackground(editor, e, editor.BrushSettings.Brush);
-			}
-			else
-			{
-				PaintSolid(editor, e);
-			}
-
-			if (editor.ButtonPanel != null)
-			{
-				var editorRect = editor.ButtonPanel;
-				editorRect.Y = editor.Editor.ClientRectangle.Y;
-				editor.ButtonPanel = editorRect;
-			}
-
-			if (editor.Buttons?.Count > 0)
-			{
-				if (editor.TotalWidth == 0) editor.TotalWidth = CalculateTotalWidth(editor);
-
-				int bX = editor.ButtonPanel.X, bY = editor.ButtonPanel.Y;
-
-				if (editor.Align == ButtonRowAlign.Center)
-				{
-					bX = editor.ButtonPanel.X + ((editor.ButtonPanel.Width - editor.TotalWidth) / 2);
-
-					foreach (var button in editor.Buttons)
-					{
-						button.Rect.X = bX;
-						button.Rect.Y = bY;
-
-						ButtonState bstate = ButtonState.Disabled;
-						if (editor.Editor.Enabled)
-						{
-							if (button.Pressed) bstate = ButtonState.Pressed;
-							else if (button.Hovered) bstate = ButtonState.Hot;
-							else bstate = ButtonState.Normal;
-						}
-
-						ApplyColors(button, ControlRenderer);
-						ControlRenderer.DrawButton(e.Graphics, button.Rect, bstate, button.Label);
-						ResetColors(ControlRenderer);
-
-						bX += button.Rect.Width + editor.SpacingX;
-					}
-				}
-				else
-				{
-					bX = editor.Align == ButtonRowAlign.Left ? editor.ButtonPanel.X : editor.ButtonPanel.Right;
-
-					foreach (var button in editor.Buttons)
-					{
-						if (editor.Align == ButtonRowAlign.Left)
-						{
-							button.Rect.X = bX;
-							bX += button.Rect.Width + editor.SpacingX;
-						}
-						else if (editor.Align == ButtonRowAlign.Right)
-						{
-							button.Rect.X = bX - button.Rect.Width;
-							bX -= button.Rect.Width + editor.SpacingX;
-						}
-
-						button.Rect.Y = bY;
-
-						ButtonState bstate = ButtonState.Disabled;
-						if (editor.Editor.Enabled)
-						{
-							if (button.Pressed) bstate = ButtonState.Pressed;
-							else if (button.Hovered) bstate = ButtonState.Hot;
-							else bstate = ButtonState.Normal;
-						}
-
-						ApplyColors(button, ControlRenderer);
-						ControlRenderer.DrawButton(e.Graphics, button.Rect, bstate, button.Label);
-						ResetColors(ControlRenderer);
-					}
-				}
-			}
-		}
-
-		public static void OnMouseMove(IButtonPropertyEditor editor, MouseEventArgs e)
-		{
-			if (editor.Buttons?.Count > 0)
-			{
-				foreach (var button in editor.Buttons)
-				{
-					var lastHovered = button.Hovered;
-					button.Hovered = button.Rect.Contains(e.Location);
-				}
-			}
-		}
-
-		public static void OnMouseLeave(IButtonPropertyEditor editor, EventArgs e)
-		{
-			if (editor.Buttons?.Count > 0)
-			{
-				foreach (var button in editor.Buttons)
-				{
-					button.Hovered = false;
-				}
-			}
-		}
-
-		public static void OnMouseDown(IButtonPropertyEditor editor, MouseEventArgs e)
-		{
-			if (editor.Buttons?.Count > 0)
-			{
-				foreach (var button in editor.Buttons)
-				{
-					if (button.Hovered && (e.Button & MouseButtons.Left) != MouseButtons.None)
-					{
-						button.Pressed = true;
-					}
-				}
-			}
-		}
-
-		public static void OnClick(IButtonPropertyEditor editor, MouseEventArgs e)
-		{
-			if (editor.Buttons?.Count > 0)
-			{
-				foreach (var button in editor.Buttons)
-				{
-					if (button.Hovered && (e.Button & MouseButtons.Left) != MouseButtons.None)
-					{
-						if (button.Pressed && button.Hovered)
-						{
-							if (button.Value != null)
-							{
-								button.Value.OnClick?.Invoke();
-								RefreshAffectedProperty(editor, button.Value);
-							}
-						}
-
-						button.Pressed = false;
-					}
-				}
-			}
+				Color = Color.Transparent
+			};
+			defaultSettings.Brush = new SolidBrush(defaultSettings.Color);
+			return defaultSettings;
 		}
 	}
 }

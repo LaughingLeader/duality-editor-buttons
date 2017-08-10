@@ -17,6 +17,8 @@ namespace EditorButtons.Editor
 
 		IButtonBackground Background { get; set; }
 
+		int ButtonSpacing { get; set; }
+
 		float HeightPercentage { get; set; }
 	}
 }

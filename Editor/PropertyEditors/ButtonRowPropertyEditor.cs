@@ -6,10 +6,11 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using ButtonState = AdamsLair.WinForms.Drawing.ButtonState;
 
 namespace EditorButtons.Editor.PropertyEditors
 {
-	public class ButtonRowPropertyEditor : PropertyEditor, IButtonPropertyEditor
+	public class ButtonRowPropertyEditor : PropertyEditor
 	{
 		private ButtonContainerPropertyEditor parentContainer;
 		private Rectangle buttonPanel = Rectangle.Empty;
@@ -22,8 +23,6 @@ namespace EditorButtons.Editor.PropertyEditors
 
 		public IButtonRow RowData { get => rowData; set => rowData = value; }
 
-		#region IButtonPropertyEditor
-
 		public Rectangle ButtonPanel { get => buttonPanel; set => buttonPanel = value; }
 		public List<ButtonProperty> Buttons { get => buttons; set => buttons = value; }
 		public int TotalWidth { get => totalWidth; set => totalWidth = value; }
@@ -32,12 +31,10 @@ namespace EditorButtons.Editor.PropertyEditors
 
 		public PropertyEditor Editor { get => this; }
 
-		public IButtonContainer Container { get => parentContainer.Container; set { } }
+		public IButtonContainer Container { get => parentContainer?.Data; set { } }
 
 		public IButtonBackground Background { get; set; }
 		public IBrushSettings<Brush> BrushSettings { get; set; }
-
-		#endregion IButtonPropertyEditor
 
 		public override object DisplayedValue
 		{
@@ -77,14 +74,104 @@ namespace EditorButtons.Editor.PropertyEditors
 		{
 			base.OnPaint(e);
 
-			ButtonPropertyMethods.OnPaint(this, e, this.ControlRenderer);
+			if (BrushSettings == null && Background != null)
+			{
+				BrushSettings = ButtonPropertyMethods.PrepareBrush(Background);
+			}
+
+			if (BrushSettings != null && BrushSettings.Brush != null)
+			{
+				ButtonPropertyMethods.FillBackground(ButtonPanel, e, BrushSettings.Brush, Background.Outline);
+			}
+			else
+			{
+				ButtonPropertyMethods.PaintSolid(ButtonPanel, e, null, Background.Outline);
+			}
+
+			if (ButtonPanel != null)
+			{
+				var editorRect = ButtonPanel;
+				editorRect.Y = Editor.ClientRectangle.Y;
+				ButtonPanel = editorRect;
+			}
+
+			if (Buttons?.Count > 0)
+			{
+				if (TotalWidth == 0) TotalWidth = ButtonPropertyMethods.CalculateTotalWidth(this);
+
+				int bX = ButtonPanel.X, bY = ButtonPanel.Y;
+
+				if (Align == ButtonRowAlign.Center)
+				{
+					bX = ButtonPanel.X + ((ButtonPanel.Width - TotalWidth) / 2);
+
+					foreach (var button in Buttons)
+					{
+						button.Rect.X = bX;
+						button.Rect.Y = bY;
+
+						ButtonState bstate = ButtonState.Disabled;
+						if (Editor.Enabled)
+						{
+							if (button.Pressed) bstate = ButtonState.Pressed;
+							else if (button.Hovered) bstate = ButtonState.Hot;
+							else bstate = ButtonState.Normal;
+						}
+
+						ButtonPropertyMethods.ApplyColors(button, ControlRenderer);
+						ControlRenderer.DrawButton(e.Graphics, button.Rect, bstate, button.Label);
+						ButtonPropertyMethods.ResetColors(ControlRenderer);
+
+						bX += button.Rect.Width + SpacingX;
+					}
+				}
+				else
+				{
+					bX = Align == ButtonRowAlign.Left ? ButtonPanel.X : ButtonPanel.Right;
+
+					foreach (var button in Buttons)
+					{
+						if (Align == ButtonRowAlign.Left)
+						{
+							button.Rect.X = bX;
+							bX += button.Rect.Width + SpacingX;
+						}
+						else if (Align == ButtonRowAlign.Right)
+						{
+							button.Rect.X = bX - button.Rect.Width;
+							bX -= button.Rect.Width + SpacingX;
+						}
+
+						button.Rect.Y = bY;
+
+						ButtonState bstate = ButtonState.Disabled;
+						if (Editor.Enabled)
+						{
+							if (button.Pressed) bstate = ButtonState.Pressed;
+							else if (button.Hovered) bstate = ButtonState.Hot;
+							else bstate = ButtonState.Normal;
+						}
+
+						ButtonPropertyMethods.ApplyColors(button, ControlRenderer);
+						ControlRenderer.DrawButton(e.Graphics, button.Rect, bstate, button.Label);
+						ButtonPropertyMethods.ResetColors(ControlRenderer);
+					}
+				}
+			}
 		}
 
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
 			base.OnMouseMove(e);
 
-			ButtonPropertyMethods.OnMouseMove(this, e);
+			if (Buttons?.Count > 0)
+			{
+				foreach (var button in Buttons)
+				{
+					var lastHovered = button.Hovered;
+					button.Hovered = button.Rect.Contains(e.Location);
+				}
+			}
 
 			this.Invalidate();
 		}
@@ -93,7 +180,13 @@ namespace EditorButtons.Editor.PropertyEditors
 		{
 			base.OnMouseLeave(e);
 
-			ButtonPropertyMethods.OnMouseLeave(this, e);
+			if (Buttons?.Count > 0)
+			{
+				foreach (var button in Buttons)
+				{
+					button.Hovered = false;
+				}
+			}
 
 			this.Invalidate();
 		}
@@ -102,16 +195,48 @@ namespace EditorButtons.Editor.PropertyEditors
 		{
 			base.OnMouseDown(e);
 
-			ButtonPropertyMethods.OnMouseDown(this, e);
+			if (Buttons?.Count > 0)
+			{
+				foreach (var button in Buttons)
+				{
+					if (button.Hovered && (e.Button & MouseButtons.Left) != MouseButtons.None)
+					{
+						button.Pressed = true;
+					}
+				}
+			}
 
 			this.Invalidate();
+		}
+
+		private void OnClick(MouseEventArgs e)
+		{
+			if (Buttons?.Count > 0)
+			{
+				foreach (var button in Buttons)
+				{
+					if (button.Hovered && (e.Button & MouseButtons.Left) != MouseButtons.None)
+					{
+						if (button.Pressed && button.Hovered)
+						{
+							if (button.Value != null)
+							{
+								button.Value.OnClick?.Invoke();
+								ButtonPropertyMethods.RefreshAffectedProperty(this, button.Value);
+							}
+						}
+
+						button.Pressed = false;
+					}
+				}
+			}
 		}
 
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
 			base.OnMouseUp(e);
 
-			ButtonPropertyMethods.OnClick(this, e);
+			OnClick(e);
 
 			this.Invalidate();
 		}
@@ -120,18 +245,18 @@ namespace EditorButtons.Editor.PropertyEditors
 		{
 			base.OnMouseDoubleClick(e);
 
-			ButtonPropertyMethods.OnClick(this, e);
+			OnClick(e);
 
 			this.Invalidate();
 		}
 
-		public ButtonRowPropertyEditor(ButtonContainerPropertyEditor ParentContainer, List<ButtonProperty> rowButtons, IButtonRow rowData, int bSpacingX = 1)
+		public ButtonRowPropertyEditor(ButtonContainerPropertyEditor ParentContainer, List<ButtonProperty> rowButtons, IButtonRow rowData)
 		{
 			this.RowData = rowData;
 			this.Background = RowData.Background;
 			this.parentContainer = ParentContainer;
 			this.Buttons = rowButtons;
-			this.SpacingX = bSpacingX;
+			this.SpacingX = rowData.ButtonSpacing;
 			this.Align = RowData.Align;
 
 			var mask = ~HintFlags.HasPropertyName;
