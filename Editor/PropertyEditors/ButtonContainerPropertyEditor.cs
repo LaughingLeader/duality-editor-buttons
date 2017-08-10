@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace EditorButtons.Editor.PropertyEditors
@@ -232,6 +233,16 @@ namespace EditorButtons.Editor.PropertyEditors
 			}
 		}
 
+		private void OnObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs e)
+		{
+			if (data != null && data.Dirty)
+			{
+				InitButtonRows(data);
+				data.Dirty = false;
+				ButtonPropertyMethods.RefreshAffectedProperty(this);
+			}
+		}
+
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
 			base.OnMouseMove(e);
@@ -282,6 +293,8 @@ namespace EditorButtons.Editor.PropertyEditors
 			buttonPropertyRows = new List<List<ButtonProperty>>();
 			this.Hints = HintFlags.None;
 			this.Indent = 0;
+
+			DualityEditorApp.ObjectPropertyChanged += OnObjectPropertyChanged;
 		}
 
 		public override void InitContent()
