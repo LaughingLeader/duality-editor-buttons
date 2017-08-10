@@ -9,15 +9,6 @@ See the [Sample plugin](https://github.com/LaughingLeader/duality-editor-buttons
 
 Also check out the [Getting Started](https://github.com/LaughingLeader/duality-editor-buttons/wiki/Getting-Started) page for more information.
 
-_This next section will be valid once we're integrated with the package manager._
-~~### Installation~~
-~~1. Open Duality~~
-~~2. Click **File**, then **Manage Packages...**~~
-~~3. Change **View** from **Installed Packages** to **Online Repository**~~
-~~4. Select **Editor Buttons Plugin** from the list, and click **Install**~~
-~~5. Once the installation is done, click the **Apply** button.~~
-~~6. Done!~~
-
 ### Manual Installation
 1. Grab a **[Release Build](https://github.com/LaughingLeader/duality-editor-buttons/releases)**.
 2. Extract the zip and move the files inside your Duality project's **Plugins/** directory.
