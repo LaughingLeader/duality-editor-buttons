@@ -17,6 +17,8 @@ namespace ButtonSample
 		[DontSerialize] private EditorButtonContainer singleButtonContainer;
 		[DontSerialize] private EditorButtonContainer multiRowButtonContainer;
 		[DontSerialize] private EditorButtonRow row4;
+		[DontSerialize] private HeaderChanger singleHeaderChanger;
+		[DontSerialize] private HeaderChanger multiHeaderChanger;
 
 		private List<int> testList;
 		private EditorButton addGameObjectButton;
@@ -49,9 +51,39 @@ namespace ButtonSample
 		public EditorButtonContainer SingleButtonContainer => singleButtonContainer;
 		public EditorButtonContainer MultiRowButtonContainer => multiRowButtonContainer;
 
+		public HeaderChanger HeaderChangerSingle
+		{
+			get => singleHeaderChanger;
+			set
+			{
+				if (value != null) singleHeaderChanger = value;
+			}
+		}
+		public HeaderChanger HeaderChangerMulti
+		{
+			get => multiHeaderChanger;
+			set
+			{
+				if (value != null) multiHeaderChanger = value;
+			}
+		}
+
 		public List<int> TestList { get => testList; set => testList = value; }
 
 		public GameObject Target { get => target; set => target = value; }
+
+		public int IndentMulti
+		{
+			get => multiRowButtonContainer.Indent;
+			set
+			{
+				if (multiRowButtonContainer.Indent != value)
+				{
+					multiRowButtonContainer.Indent = value;
+					multiRowButtonContainer.Dirty = true;
+				}
+			}
+		}
 
 		[EditorHintFlags(MemberFlags.AffectsOthers)]
 		public bool Collapsible
@@ -104,6 +136,16 @@ namespace ButtonSample
 			}
 		}
 
+		private void OnSinglePropertyChanged()
+		{
+			singleButtonContainer.Dirty = true;
+		}
+
+		private void OnMultiPropertyChanged()
+		{
+			multiRowButtonContainer.Dirty = true;
+		}
+
 		public void OnInit(Component.InitContext context)
 		{
 			if (context == InitContext.Activate)
@@ -121,6 +163,8 @@ namespace ButtonSample
 
 					singleButtonContainer.Rows.First().Buttons.Add(addGameObjectButton);
 					singleButtonContainer.Rows.First().Buttons.Add(testButton);
+
+					singleHeaderChanger = new HeaderChanger(singleButtonContainer.HeaderSettings, OnSinglePropertyChanged);
 				}
 
 				if (multiRowButtonContainer == null)
@@ -192,6 +236,8 @@ namespace ButtonSample
 					multiRowButtonContainer.Rows.Add(row3);
 					multiRowButtonContainer.Rows.Add(row4);
 					multiRowButtonContainer.Rows.Add(emptyRow);
+
+					multiHeaderChanger = new HeaderChanger(multiRowButtonContainer.HeaderSettings, OnMultiPropertyChanged);
 				}
 			}
 		}

@@ -16,10 +16,19 @@ namespace ButtonSample.Buttons
 			Buttons.Add(button);
 		}
 
-		public EditorButtonRow(ButtonRowAlign align = ButtonRowAlign.Left)
+		public EditorButtonRow() { Buttons = new List<IButtonValue>(); }
+
+		public EditorButtonRow(ButtonRowAlign align)
 		{
-			Align = align;
 			Buttons = new List<IButtonValue>();
+			Align = align;
+		}
+
+
+		public EditorButtonRow(List<IButtonValue> buttons, ButtonRowAlign align)
+		{
+			Buttons = buttons;
+			Align = align;
 		}
 	}
 }

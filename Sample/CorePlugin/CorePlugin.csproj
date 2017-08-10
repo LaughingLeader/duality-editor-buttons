@@ -56,7 +56,7 @@
       <HintPath>..\..\Core\bin\Release\DualityPrimitives.dll</HintPath>
     </Reference>
     <Reference Include="EditorButtons.core">
-      <HintPath>..\..\Core\bin\Release\EditorButtons.core.dll</HintPath>
+      <HintPath>..\..\..\..\LowRezJam\SoulFist\Plugins\EditorButtons.core.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -64,6 +64,7 @@
     <Compile Include="ButtonComponent.cs" />
     <Compile Include="Buttons\EditorButtonContainer.cs" />
     <Compile Include="Buttons\EditorButtonRow.cs" />
+    <Compile Include="Buttons\HeaderChanger.cs" />
     <Compile Include="CorePlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

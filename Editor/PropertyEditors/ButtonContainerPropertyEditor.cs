@@ -81,6 +81,10 @@ namespace EditorButtons.Editor.PropertyEditors
 				{
 					this.HeaderIcon = value.HeaderSettings.Icon.Res.MainLayer.ToBitmap();
 				}
+				else
+				{
+					this.HeaderIcon = null;
+				}
 
 				if(!value.HeaderSettings.ShowHeaderLabel)
 				{
@@ -120,7 +124,7 @@ namespace EditorButtons.Editor.PropertyEditors
 			{
 				ApplyData(value);
 
-				Log.Editor.Write($"Initializing rows for [{this.PropertyName}|{this.HeaderValueText}]");
+				//Log.Editor.Write($"Initializing button rows for [{this.PropertyName}|{this.HeaderValueText}]");
 
 				if (rowEditors.Count > 0)
 				{
