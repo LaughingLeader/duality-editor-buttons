@@ -44,7 +44,8 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>EditorButtons.core.xml</DocumentationFile>
+    <DocumentationFile>
+    </DocumentationFile>
     <NoWarn>1591,1592,1573,1571,1570,1572</NoWarn>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
@@ -54,6 +55,7 @@
     <Compile Include="Editor\Backgrounds\IButtonBackground.cs" />
     <Compile Include="Editor\ButtonColors.cs" />
     <Compile Include="Editor\Backgrounds\ContainerBackgrounds.cs" />
+    <Compile Include="Editor\HeaderSettings.cs" />
     <Compile Include="Editor\IButtonContainer.cs" />
     <Compile Include="Editor\IButtonRow.cs" />
     <Compile Include="Editor\IButtonValue.cs" />
@@ -78,8 +80,14 @@
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>mkdir "$(SolutionDir)/bin"
+copy "$(TargetPath)" "$(SolutionDir)/bin"
+copy "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)/bin"
+xcopy /Y "$(TargetDir)*.core.xml" "$(SolutionDir)/bin"</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

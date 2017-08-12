@@ -1,5 +1,6 @@
 #Custom Stuff
 Sample/*.sln
+bin
 
 
 ## Ignore Visual Studio temporary files, build results, and

@@ -49,7 +49,7 @@
     <Reference Include="Aga.Controls, Version=1.7.6.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\AdamsLair.TreeViewAdv.1.7.6.0\lib\net20\Aga.Controls.dll</HintPath>
     </Reference>
-    <Reference Include="Duality, Version=2.12.13.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Duality">
       <HintPath>..\packages\AdamsLair.Duality.2.12.13\lib\Duality.dll</HintPath>
     </Reference>
     <Reference Include="DualityEditor, Version=2.9.1.0, Culture=neutral, processorArchitecture=MSIL">
@@ -88,7 +88,6 @@
     <Compile Include="Buttons\ButtonPropertyMethods.cs" />
     <Compile Include="PropertyEditors\ButtonRowPropertyEditor.cs" />
     <Compile Include="Buttons\ButtonProperty.cs" />
-    <Compile Include="Buttons\IButtonPropertyEditor.cs" />
     <Compile Include="EditorPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -104,8 +103,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>mkdir "$(SolutionDir)/bin"
+copy "$(TargetPath)" "$(SolutionDir)/bin"
+copy "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)/bin"
+xcopy /Y "$(TargetDir)*.core.xml" "$(SolutionDir)/bin"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
