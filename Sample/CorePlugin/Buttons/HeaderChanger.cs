@@ -1,12 +1,8 @@
 ﻿using Duality;
 using Duality.Drawing;
 using Duality.Resources;
-using EditorButtons.Editor;
+using EditorButtons.Buttons;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ButtonSample.Buttons
 {
@@ -15,7 +11,6 @@ namespace ButtonSample.Buttons
 	{
 		private HeaderSettings target;
 		private Action OnPropertyChanged;
-
 
 		public string HeaderLabel
 		{

@@ -45,7 +45,14 @@ namespace EditorButtons.Editor
 		{
 			WidthPercentage = widthPercentage;
 
-			if (buttons != null) Buttons = buttons.ToList();
+			if (buttons != null && buttons.Length > 0)
+			{
+				Buttons = buttons.ToList();
+			}
+			else
+			{
+				Buttons = new List<IButtonValue>();
+			}
 		}
 
 		public EditorButtonRow(List<IButtonValue> buttons, float widthPercentage = 1, ButtonRowAlign align = ButtonRowAlign.Center)

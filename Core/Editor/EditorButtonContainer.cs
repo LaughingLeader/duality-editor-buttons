@@ -1,4 +1,5 @@
-﻿using EditorButtons.Buttons;
+﻿using Duality;
+using EditorButtons.Buttons;
 using EditorButtons.Buttons.Backgrounds;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,23 +12,27 @@ namespace EditorButtons.Editor
 		public HeaderSettings HeaderSettings { get; set; }
 		public int Indent { get; set; }
 		public bool Collapsible { get; set; }
+		public ButtonRowAlign DefaultAlign { get; set; }
 		public bool Dirty { get; set; }
 
-		public EditorButtonContainer(string Name = "", ButtonRowAlign Align = ButtonRowAlign.Center, List<IButtonRow> rows = null)
+
+		public EditorButtonContainer(string Name = "", ButtonRowAlign Align = ButtonRowAlign.Center, params IButtonRow[] rows)
 		{
+			DefaultAlign = Align;
 			Indent = 0;
 			HeaderSettings = new HeaderSettings
 			{
 				HeaderLabel = Name
 			};
 
-			if (rows != null)
+			if (rows != null && rows.Length > 0)
 			{
-				Rows = rows;
+				Rows = rows.ToList();
 			}
 			else
 			{
-				Rows = new List<IButtonRow>() { new EditorButtonRow() };
+				Rows = new List<IButtonRow>();
+				Rows.Add(new EditorButtonRow());
 			}
 		}
 	}

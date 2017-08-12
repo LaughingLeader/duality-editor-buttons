@@ -117,6 +117,11 @@ namespace EditorButtons.PropertyEditors
 				{
 					List<ButtonProperty> buttonRow = new List<ButtonProperty>();
 
+					if (row.Align == default(ButtonRowAlign))
+					{
+						row.Align = value.DefaultAlign;
+					}
+
 					if (row.Buttons != null && row.Buttons.Count > 0)
 					{
 						foreach (var button in row.Buttons)

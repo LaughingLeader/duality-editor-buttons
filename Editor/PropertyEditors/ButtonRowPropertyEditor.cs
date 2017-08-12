@@ -45,7 +45,8 @@ namespace EditorButtons.PropertyEditors
 		{
 			totalWidth = 0;
 			var totalSpacing = RowData.Buttons.Count * RowData.ButtonSpacing;
-			var i = 0;
+			var rowWidth = (buttonPanel.Width * RowData.WidthPercentage);
+
 			foreach (var buttonEntry in buttons)
 			{
 				if (buttonEntry.Value.WidthPercentage > 1) buttonEntry.Value.WidthPercentage = 1;
@@ -55,21 +56,20 @@ namespace EditorButtons.PropertyEditors
 
 				if (RowData.ScaleMode == ButtonRowScaleMode.Manual)
 				{
-					buttonEntry.Rect.Width = MathF.RoundToInt(buttonPanel.Width * buttonEntry.Value.WidthPercentage);
-					buttonEntry.Rect.Height = MathF.RoundToInt(buttonPanel.Height * buttonEntry.Value.HeightPercentage);
+					buttonEntry.Rect.Width = MathF.RoundToInt(rowWidth * buttonEntry.Value.WidthPercentage);
+					buttonEntry.Rect.Height = MathF.RoundToInt((buttonPanel.Height * RowData.HeightPercentage) * buttonEntry.Value.HeightPercentage);
 				}
 				else
 				{
-					var maxButtonWidth = ((buttonPanel.Width * RowData.WidthPercentage) + totalSpacing) / RowData.Buttons.Count;
+					var maxButtonWidth = (rowWidth + totalSpacing) / RowData.Buttons.Count;
 					buttonEntry.Rect.Width = MathF.RoundToInt(maxButtonWidth * buttonEntry.Value.WidthPercentage);
 					buttonEntry.Rect.Height = MathF.RoundToInt((buttonPanel.Height * RowData.HeightPercentage) * buttonEntry.Value.HeightPercentage);
 
 					//Log.Editor.Write($"Row[{RowNum}:{buttons.Count}:{i}] Set width: {buttonEntry.Rect.Width} | max[{maxButtonWidth}] " +
 					//	$"buttonPanel[{buttonPanel.Width}] totalSpacing[{totalSpacing}] buttonWidth%[{buttonEntry.Value.WidthPercentage}]");
-
-					totalWidth += buttonEntry.Rect.Width;
 				}
-				i++;
+
+				totalWidth += buttonEntry.Rect.Width;
 			}
 		}
 

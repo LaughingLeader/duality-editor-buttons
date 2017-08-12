@@ -12,6 +12,8 @@ namespace EditorButtons.Buttons
 
 		int Indent { get; set; }
 
+		ButtonRowAlign DefaultAlign { get; set; }
+
 		/// <summary>
 		/// Notifies the ButtonContainerPropertyEditor to rebuild and re-paint.
 		/// </summary>

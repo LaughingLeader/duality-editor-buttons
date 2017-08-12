@@ -3,8 +3,9 @@ using Duality;
 using Duality.Drawing;
 using Duality.Editor;
 using Duality.Resources;
+using EditorButtons.Buttons;
+using EditorButtons.Buttons.Backgrounds;
 using EditorButtons.Editor;
-using EditorButtons.Editor.Backgrounds;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,7 +50,7 @@ namespace ButtonSample
 				}
 			}
 		}
-		
+
 		public EditorButtonContainer ZA_EmptyButtonContainer { get => emptyButtonContainer; set => emptyButtonContainer = value; }
 		public EditorButtonContainer ZB_SingleButtonContainer { get => singleButtonContainer; set => singleButtonContainer = value; }
 		public EditorButtonContainer ZC_MultiRowButtonContainer { get => multiRowButtonContainer; set => multiRowButtonContainer = value; }
@@ -82,6 +83,7 @@ namespace ButtonSample
 				if (value != null) singleHeaderChanger = value;
 			}
 		}
+
 		public HeaderChanger HeaderChangerMulti
 		{
 			get => multiHeaderChanger;
@@ -184,7 +186,7 @@ namespace ButtonSample
 			{
 				if (testList == null) testList = new List<int>();
 
-				if(emptyButtonContainer == null)
+				if (emptyButtonContainer == null)
 				{
 					emptyButtonContainer = new EditorButtonContainer("");
 					emptyBackground = new SolidBackground(ColorRgba.TransparentWhite);
@@ -196,14 +198,12 @@ namespace ButtonSample
 
 				if (singleButtonContainer == null)
 				{
-					singleButtonContainer = new EditorButtonContainer("Single Row Buttons", ButtonRowAlign.Center);
-					singleButtonContainer.Rows.First().Background = new SolidBackground(ColorRgba.Green);
-
 					addGameObjectButton = new EditorButton("Add GameObject", AddGameObjectExternal, 0.25f);
 					var testButton = new EditorButton("Test Button 2", ButtonHit, 0.60f);
 
-					singleButtonContainer.Rows.First().Buttons.Add(addGameObjectButton);
-					singleButtonContainer.Rows.First().Buttons.Add(testButton);
+					var singleRow = new EditorButtonRow(0.75f, addGameObjectButton, testButton);
+					singleRow.Background = new SolidBackground(ColorRgba.Green);
+					singleButtonContainer = new EditorButtonContainer("Single Row Buttons", ButtonRowAlign.Center, singleRow);
 
 					singleHeaderChanger = new HeaderChanger(singleButtonContainer.HeaderSettings, OnSinglePropertyChanged);
 				}
