@@ -2,7 +2,7 @@
 using Duality.Drawing;
 using Duality.Resources;
 
-namespace EditorButtons.Editor.Backgrounds
+namespace EditorButtons.Buttons.Backgrounds
 {
 	public class BackgroundBase
 	{

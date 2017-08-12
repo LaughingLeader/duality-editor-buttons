@@ -2,16 +2,14 @@
 using Duality;
 using Duality.Drawing;
 using Duality.Editor;
-using EditorButtons.Editor.Backgrounds;
-using EditorButtons.Editor.Buttons;
-using System;
+using EditorButtons.Buttons;
+using EditorButtons.Buttons.Backgrounds;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Reflection;
 using System.Windows.Forms;
 
-namespace EditorButtons.Editor.PropertyEditors
+namespace EditorButtons.PropertyEditors
 {
 	[PropertyEditorAssignment(typeof(IButtonContainer))]
 	public class ButtonContainerPropertyEditor : GroupedPropertyEditor
@@ -49,7 +47,7 @@ namespace EditorButtons.Editor.PropertyEditors
 					this.HeaderValueText = value.HeaderSettings.HeaderLabel;
 				}
 
-				if(value.HeaderSettings.PropertyLabel != null)
+				if (value.HeaderSettings.PropertyLabel != null)
 				{
 					this.PropertyName = value.HeaderSettings.PropertyLabel;
 				}
@@ -70,7 +68,7 @@ namespace EditorButtons.Editor.PropertyEditors
 					this.HeaderIcon = null;
 				}
 
-				if(!value.HeaderSettings.ShowHeaderLabel)
+				if (!value.HeaderSettings.ShowHeaderLabel)
 				{
 					this.HeaderHeight = 0;
 				}
@@ -82,7 +80,6 @@ namespace EditorButtons.Editor.PropertyEditors
 				{
 					if (this.HeaderHeight <= 0) this.HeaderHeight = originalHeaderHeight;
 				}
-
 
 				if (value.HeaderSettings.ShowPropertyLabel)
 				{
@@ -131,8 +128,6 @@ namespace EditorButtons.Editor.PropertyEditors
 									Label = button.ButtonLabel,
 									Value = button
 								};
-								buttonEntry.Rect.Width = MathF.RoundToInt(backgroundPanel.Width * button.WidthPercentage);
-								buttonEntry.Rect.Height = MathF.RoundToInt(backgroundPanel.Height * button.HeightPercentage);
 
 								buttonRow.Add(buttonEntry);
 							}
@@ -144,6 +139,7 @@ namespace EditorButtons.Editor.PropertyEditors
 					if (value.Rows.Count > 0)
 					{
 						var rowEditor = new ButtonRowPropertyEditor(this, buttonRow, row);
+						rowEditor.RowNum = rowNum;
 						if (!Collapsible)
 						{
 							rowEditor.Hints = Hints & ~HintFlags.HasExpandCheck;
@@ -253,14 +249,14 @@ namespace EditorButtons.Editor.PropertyEditors
 		{
 			base.OnParentEditorChanged();
 
-			if(!initialized)
+			if (!initialized)
 			{
 				//Log.Editor.Write($"ParentEditor changed for {this.PropertyName} Active {this.Active} | Added event.");
 				DualityEditorApp.ObjectPropertyChanged += OnObjectPropertyChanged;
 				initialized = true;
 			}
 
-			if(!dataInitialized && this.GetValue() != null)
+			if (!dataInitialized && this.GetValue() != null)
 			{
 				Data = this.GetValue()?.Cast<IButtonContainer>().FirstOrDefault();
 
@@ -274,7 +270,7 @@ namespace EditorButtons.Editor.PropertyEditors
 
 		protected override void OnDisposing(bool manually)
 		{
-			if(initialized)
+			if (initialized)
 			{
 				//Log.Editor.Write($"{this.PropertyName} is Disposing | Removed event.");
 				DualityEditorApp.ObjectPropertyChanged -= OnObjectPropertyChanged;

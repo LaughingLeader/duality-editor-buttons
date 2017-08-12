@@ -1,14 +1,14 @@
 ﻿using AdamsLair.WinForms.PropertyEditing;
 using Duality;
-using EditorButtons.Editor.Backgrounds;
-using EditorButtons.Editor.Buttons;
+using EditorButtons.Buttons;
+using EditorButtons.Buttons.Backgrounds;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using ButtonState = AdamsLair.WinForms.Drawing.ButtonState;
 
-namespace EditorButtons.Editor.PropertyEditors
+namespace EditorButtons.PropertyEditors
 {
 	public class ButtonRowPropertyEditor : PropertyEditor
 	{
@@ -25,8 +25,6 @@ namespace EditorButtons.Editor.PropertyEditors
 
 		public Rectangle ButtonPanel { get => buttonPanel; set => buttonPanel = value; }
 		public List<ButtonProperty> Buttons { get => buttons; set => buttons = value; }
-		public int TotalWidth { get => totalWidth; set => totalWidth = value; }
-		public int SpacingX { get => spacingX; set => spacingX = value; }
 		public ButtonRowAlign Align { get => align; set => align = value; }
 
 		public PropertyEditor Editor { get => this; }
@@ -36,9 +34,43 @@ namespace EditorButtons.Editor.PropertyEditors
 		public IButtonBackground Background { get; set; }
 		public IBrushSettings<Brush> BrushSettings { get; set; }
 
+		public int RowNum { get; set; }
+
 		public override object DisplayedValue
 		{
 			get { return this.GetValue(); }
+		}
+
+		public void SetButtonSizes()
+		{
+			totalWidth = 0;
+			var totalSpacing = RowData.Buttons.Count * RowData.ButtonSpacing;
+			var i = 0;
+			foreach (var buttonEntry in buttons)
+			{
+				if (buttonEntry.Value.WidthPercentage > 1) buttonEntry.Value.WidthPercentage = 1;
+				if (buttonEntry.Value.HeightPercentage > 1) buttonEntry.Value.HeightPercentage = 1;
+				if (buttonEntry.Value.WidthPercentage < 0) buttonEntry.Value.WidthPercentage = 0;
+				if (buttonEntry.Value.HeightPercentage < 0) buttonEntry.Value.HeightPercentage = 0;
+
+				if (RowData.ScaleMode == ButtonRowScaleMode.Manual)
+				{
+					buttonEntry.Rect.Width = MathF.RoundToInt(buttonPanel.Width * buttonEntry.Value.WidthPercentage);
+					buttonEntry.Rect.Height = MathF.RoundToInt(buttonPanel.Height * buttonEntry.Value.HeightPercentage);
+				}
+				else
+				{
+					var maxButtonWidth = ((buttonPanel.Width * RowData.WidthPercentage) + totalSpacing) / RowData.Buttons.Count;
+					buttonEntry.Rect.Width = MathF.RoundToInt(maxButtonWidth * buttonEntry.Value.WidthPercentage);
+					buttonEntry.Rect.Height = MathF.RoundToInt((buttonPanel.Height * RowData.HeightPercentage) * buttonEntry.Value.HeightPercentage);
+
+					//Log.Editor.Write($"Row[{RowNum}:{buttons.Count}:{i}] Set width: {buttonEntry.Rect.Width} | max[{maxButtonWidth}] " +
+					//	$"buttonPanel[{buttonPanel.Width}] totalSpacing[{totalSpacing}] buttonWidth%[{buttonEntry.Value.WidthPercentage}]");
+
+					totalWidth += buttonEntry.Rect.Width;
+				}
+				i++;
+			}
 		}
 
 		public void UpdateRectangles()
@@ -60,14 +92,7 @@ namespace EditorButtons.Editor.PropertyEditors
 		protected override void UpdateGeometry()
 		{
 			base.UpdateGeometry();
-
 			UpdateRectangles();
-		}
-
-		//For triggering painting from the container.
-		internal void PaintRow(PaintEventArgs e)
-		{
-			this.OnPaint(e);
 		}
 
 		protected override void OnPaint(PaintEventArgs e)
@@ -99,13 +124,16 @@ namespace EditorButtons.Editor.PropertyEditors
 
 			if (Buttons?.Count > 0)
 			{
-				if (TotalWidth == 0) TotalWidth = ButtonPropertyMethods.CalculateTotalWidth(this);
+				if (totalWidth == 0)
+				{
+					SetButtonSizes();
+				}
 
 				int bX = ButtonPanel.X, bY = ButtonPanel.Y;
 
 				if (Align == ButtonRowAlign.Center)
 				{
-					bX = ButtonPanel.X + ((ButtonPanel.Width - TotalWidth) / 2);
+					bX = ButtonPanel.X + ((ButtonPanel.Width - totalWidth) / 2);
 
 					foreach (var button in Buttons)
 					{
@@ -124,7 +152,7 @@ namespace EditorButtons.Editor.PropertyEditors
 						ControlRenderer.DrawButton(e.Graphics, button.Rect, bstate, button.Label);
 						ButtonPropertyMethods.ResetColors(ControlRenderer);
 
-						bX += button.Rect.Width + SpacingX;
+						bX += button.Rect.Width + spacingX;
 					}
 				}
 				else
@@ -136,12 +164,12 @@ namespace EditorButtons.Editor.PropertyEditors
 						if (Align == ButtonRowAlign.Left)
 						{
 							button.Rect.X = bX;
-							bX += button.Rect.Width + SpacingX;
+							bX += button.Rect.Width + spacingX;
 						}
 						else if (Align == ButtonRowAlign.Right)
 						{
 							button.Rect.X = bX - button.Rect.Width;
-							bX -= button.Rect.Width + SpacingX;
+							bX -= button.Rect.Width + spacingX;
 						}
 
 						button.Rect.Y = bY;
@@ -254,12 +282,12 @@ namespace EditorButtons.Editor.PropertyEditors
 
 		public ButtonRowPropertyEditor(ButtonContainerPropertyEditor ParentContainer, List<ButtonProperty> rowButtons, IButtonRow rowData)
 		{
-			this.RowData = rowData;
+			this.rowData = rowData;
 			this.Background = RowData.Background;
 			this.parentContainer = ParentContainer;
-			this.Buttons = rowButtons;
-			this.SpacingX = rowData.ButtonSpacing;
-			this.Align = RowData.Align;
+			this.buttons = rowButtons;
+			this.spacingX = rowData.ButtonSpacing;
+			this.align = RowData.Align;
 
 			var mask = ~HintFlags.HasPropertyName;
 			this.Hints = this.Hints & mask;

@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace EditorButtons.Editor.Buttons
+namespace EditorButtons.Buttons
 {
 	public class ButtonProperty
 	{

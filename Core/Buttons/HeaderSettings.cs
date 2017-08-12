@@ -2,7 +2,7 @@
 using Duality.Drawing;
 using Duality.Resources;
 
-namespace EditorButtons.Editor
+namespace EditorButtons.Buttons
 {
 	public enum ContainerHeaderStyle
 	{

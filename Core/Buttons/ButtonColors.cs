@@ -1,6 +1,6 @@
 ﻿using Duality.Drawing;
 
-namespace EditorButtons.Editor
+namespace EditorButtons.Buttons
 {
 	public class ButtonColors
 	{

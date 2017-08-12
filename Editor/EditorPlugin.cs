@@ -1,6 +1,6 @@
 ﻿using Duality.Editor;
 using Duality.Editor.Forms;
-using EditorButtons.Editor.Buttons;
+using EditorButtons.Buttons;
 
 namespace EditorButtons.Editor
 {

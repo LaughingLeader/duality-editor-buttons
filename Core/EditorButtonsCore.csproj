@@ -52,14 +52,18 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CorePlugin.cs" />
-    <Compile Include="Editor\Backgrounds\BackgroundEnums.cs" />
-    <Compile Include="Editor\Backgrounds\IButtonBackground.cs" />
-    <Compile Include="Editor\ButtonColors.cs" />
-    <Compile Include="Editor\Backgrounds\ContainerBackgrounds.cs" />
-    <Compile Include="Editor\HeaderSettings.cs" />
-    <Compile Include="Editor\IButtonContainer.cs" />
-    <Compile Include="Editor\IButtonRow.cs" />
-    <Compile Include="Editor\IButtonValue.cs" />
+    <Compile Include="Buttons\Backgrounds\BackgroundEnums.cs" />
+    <Compile Include="Buttons\Backgrounds\IButtonBackground.cs" />
+    <Compile Include="Buttons\ButtonColors.cs" />
+    <Compile Include="Buttons\Backgrounds\ContainerBackgrounds.cs" />
+    <Compile Include="Buttons\HeaderSettings.cs" />
+    <Compile Include="Buttons\IButtonContainer.cs" />
+    <Compile Include="Buttons\IButtonRow.cs" />
+    <Compile Include="Buttons\IButtonValue.cs" />
+    <Compile Include="Editor\EditorButton.cs" />
+    <Compile Include="Editor\EditorButtonContainer.cs" />
+    <Compile Include="Editor\EditorButtonRow.cs" />
+    <Compile Include="Misc\CommonColors.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -79,6 +83,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir "$(SolutionDir)/bin"

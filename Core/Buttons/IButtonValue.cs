@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace EditorButtons.Editor
+namespace EditorButtons.Buttons
 {
 	public interface IButtonValue
 	{

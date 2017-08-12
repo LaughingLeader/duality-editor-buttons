@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using System.Drawing.Drawing2D;
 
-namespace EditorButtons.Editor.Buttons
+namespace EditorButtons.Buttons
 {
 	public interface IBrushSettings<out T> where T : Brush
 	{

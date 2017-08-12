@@ -3,15 +3,13 @@ using AdamsLair.WinForms.PropertyEditing;
 using Duality;
 using Duality.Drawing;
 using Duality.Editor;
-using EditorButtons.Editor.Backgrounds;
-using EditorButtons.Editor.PropertyEditors;
-using System;
+using EditorButtons.Buttons.Backgrounds;
+using EditorButtons.PropertyEditors;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
-using ButtonState = AdamsLair.WinForms.Drawing.ButtonState;
 
-namespace EditorButtons.Editor.Buttons
+namespace EditorButtons.Buttons
 {
 	/// <summary>
 	/// Common methods shared between Button PropertyEditor classes.
@@ -77,26 +75,6 @@ namespace EditorButtons.Editor.Buttons
 			ControlRenderer.ColorHightlight = DefaultColorHighlight;
 			ControlRenderer.ColorText = DefaultColorText;
 			ControlRenderer.ColorGrayText = DefaultColorGrayText;
-		}
-
-		public static int CalculateTotalWidth(ButtonRowPropertyEditor editor)
-		{
-			int width = 0;
-			foreach (var button in editor.Buttons)
-			{
-				button.Rect.Width = editor.ButtonPanel.Width;
-				button.Rect.Height = editor.ButtonPanel.Height;
-
-				if (button.Value != null)
-				{
-					button.Rect.Width = MathF.RoundToInt(editor.ButtonPanel.Width * button.Value.WidthPercentage);
-					button.Rect.Height = MathF.RoundToInt(editor.ButtonPanel.Height * button.Value.HeightPercentage);
-				}
-
-				width += button.Rect.Width + editor.SpacingX;
-			}
-
-			return width;
 		}
 
 		public static void RefreshAffectedProperty(PropertyEditor editor, IButtonValue button = null)

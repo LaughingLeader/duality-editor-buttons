@@ -1,4 +1,4 @@
-﻿namespace EditorButtons.Editor.Backgrounds
+﻿namespace EditorButtons.Buttons.Backgrounds
 {
 	public enum BackgroundStyle
 	{
