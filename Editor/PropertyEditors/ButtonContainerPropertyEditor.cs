@@ -211,13 +211,15 @@ namespace EditorButtons.Editor.PropertyEditors
 					BrushSettings = ButtonPropertyMethods.PrepareBrush(Background);
 				}
 
+				var outline = Background != null ? Background.Outline : true;
+
 				if (BrushSettings != null && BrushSettings.Brush != null)
 				{
-					ButtonPropertyMethods.FillBackground(BackgroundPanel, e, BrushSettings.Brush, Background.Outline);
+					ButtonPropertyMethods.FillBackground(BackgroundPanel, e, BrushSettings.Brush, outline);
 				}
 				else
 				{
-					ButtonPropertyMethods.PaintSolid(BackgroundPanel, e, null, Background.Outline);
+					ButtonPropertyMethods.PaintSolid(BackgroundPanel, e, null, outline);
 				}
 			}
 
