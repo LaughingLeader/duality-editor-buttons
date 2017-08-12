@@ -10,7 +10,7 @@ See the [Sample plugin](https://github.com/LaughingLeader/duality-editor-buttons
 Also check out the [Getting Started](https://github.com/LaughingLeader/duality-editor-buttons/wiki/Getting-Started) page for more information.
 
 ### Manual Installation
-1. Grab a **[Release Build](https://github.com/LaughingLeader/duality-editor-buttons/releases)**.
+1. Grab a **[Release Build](https://github.com/LaughingLeader/duality-editor-buttons/releases)**. In most cases, you will only need to grab the **Core** plugin. The Editor plugin is only needed if you need to add references to it in your own Editor plugin.
 2. Extract the zip and move the files inside your Duality project's **Plugins/** directory.
 3. Inside your game's **CorePlugin**, make sure to add reference to **EditorButtons.core.dll**
 
